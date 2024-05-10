@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: booktify
+  jackson:
+    serialization:
+      indent_output: ${props.jackson.show-intent}
+  servlet:
+    multipart:
+      max-file-size: ${multipart.max-file-size}
+      max-request-size: ${multipart.max-request-size}
+  profiles.active: @activatedProperties@
+  datasource:
+    url: jdbc:postgresql://${db.host}/${db.database}?stringtype=unspecified
+    username: ${db.username}
+    password: ${db.password}
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:/changelog/migrations.xml
+    enabled: true
+  jpa:
+    show-sql: ${props.jpa.show-sql:true}
+    hibernate:
+      ddl-auto: none
+
+springdoc:
+  api-docs:
+    enabled: ${props.springdoc.enabled}
+  swagger-ui:
+    operationsSorter: method
+    tagsSorter: alpha
+    enabled: ${props.springdoc.enabled}

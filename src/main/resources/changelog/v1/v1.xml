@@ -1,0 +1,65 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+    <changeSet id="added_base_user_table" author="Yehor Hnitii">
+
+        <sql>create type USER_ROLE as enum('ROLE_CLIENT', 'ROLE_MASTER', 'ROLE_ADMIN');</sql>
+        <sql>create type USER_STATUS as enum('ACTIVE', 'DELETED', 'BANNED');</sql>
+
+        <createTable tableName="base_user">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="role" type="USER_ROLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="USER_STATUS">
+                <constraints nullable="false"/>
+            </column>
+            <column name="firstname" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastname" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(320)">
+                <constraints unique="true"/>
+            </column>
+            <column name="phone" type="VARCHAR(32)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="is_email_verified" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+
+
+    <changeSet id="added_file_table" author="Yehor Hnitii">
+
+        <createTable tableName="file">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="s3_key" type="text">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="filename" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uploaded_by_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+    </changeSet>
+</databaseChangeLog>

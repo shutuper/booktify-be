@@ -1,0 +1,49 @@
+server:
+  address: 0.0.0.0
+  port: 8080
+
+spring:
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_S3_ACCESS_KEY}
+        secret-key: ${AWS_S3_SECRET_KEY}
+      region:
+        static: eu-west-1
+
+s3:
+  bucket-name: booktify
+
+props:
+  jpa:
+    show-sql: true
+  jackson:
+    show-intent: true
+  springdoc:
+    enabled: true
+
+db:
+  host: ${DATABASE-HOST-ENV}
+  database: ${DATABASE-NAME-ENV}
+  username: ${DATABASE-USERNAME-ENV}
+  password: ${DATABASE-PASSWORD-ENV}
+
+jwt:
+  access-token:
+    secret-key: ZHNhMzIxZTNkc2FqZGwxMjJkb25zYWREU3NkMWRzYXNkYTEyZHNhZGFzZ2Fz
+    expiration: 86400000
+  refresh-token:
+    secret-key: ZHNhMzJkc2FkRlNERkFBMURTQWRzYWRzYTEzMmExMmRzYWRhc2dhcw==
+    expiration: 2592000000
+  reset-token:
+    secret-key: ZHNhMzJkc2FkRlNEdmdkajJmZGFzMTljYXNEYUJKU2Rkc2FkYXNnYXM=
+    expiration: 86400000
+
+multipart:
+  max-file-size: 20MB
+  max-request-size: 20MB
+
+cors:
+  origin: "*"
+
+

@@ -1,4 +1,4 @@
-package org.qqsucc.booktify.user.controller.dto;
+package org.qqsucc.booktify.user.controller.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -37,8 +37,10 @@ public class SignUpDto {
 	@Length(min = 8, message = "Minimum password length - 8 characters")
 	String password;
 
+	String inviteToken;
+
 	public String getEmail() {
-		return StringUtils.lowerCase(email);
+		return StringUtils.isBlank(email) ? null : StringUtils.lowerCase(email);
 	}
 
 }

@@ -68,7 +68,7 @@ public class FileServiceImpl implements FileService {
 		uploadToS3(file, s3Key);
 
 		FileEntity toSave = FileEntity.builder()
-				.uploadedById(SecurityUtils.getAuthUserId())
+				.uploadedById(SecurityUtils.getAuthUserIdOpt().orElse(null))
 				.s3key(s3Key)
 				.filename(filename)
 				.build();

@@ -132,7 +132,7 @@ public class GlobalExceptionHandler {
 		boolean isBusinessException = exception instanceof BusinessException;
 
 		if (isBusinessException) {
-			log.warn(exception.getMessage(), exception);
+			log.warn(exception.getMessage());
 			return;
 		}
 

@@ -25,6 +25,7 @@
         <apache.commons-text.version>1.12.0</apache.commons-text.version>
         <apache.commons-collections4.version>4.4</apache.commons-collections4.version>
         <jwt.version>0.12.5</jwt.version>
+        <jetbrains.annotations.version>24.1.0</jetbrains.annotations.version>
     </properties>
 
     <dependencyManagement>
@@ -138,6 +139,13 @@
             <artifactId>jjwt</artifactId>
             <version>${jwt.version}</version>
         </dependency>
+        <!-- Jetbrains annotations -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>${jetbrains.annotations.version}</version>
+        </dependency>
+
     </dependencies>
 
     <profiles>

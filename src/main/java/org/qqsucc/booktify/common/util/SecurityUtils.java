@@ -8,6 +8,7 @@ import org.qqsucc.booktify.common.security.service.SecurityService;
 import org.qqsucc.booktify.user.repository.entity.User;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -28,6 +29,10 @@ public class SecurityUtils {
 
 	public static UUID getAuthUserId() {
 		return staticSecurityService.getAuthUserId();
+	}
+
+	public static Optional<UUID> getAuthUserIdOpt() {
+		return staticSecurityService.getAuthUserIdOpt();
 	}
 
 	public static CustomUserDetails getAuthUserDetails() {

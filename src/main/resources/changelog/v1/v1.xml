@@ -8,7 +8,7 @@
     <changeSet id="added_base_user_table" author="Yehor Hnitii">
 
         <sql>create type USER_ROLE as enum('ROLE_CLIENT', 'ROLE_MASTER', 'ROLE_ADMIN');</sql>
-        <sql>create type USER_STATUS as enum('ACTIVE', 'DELETED', 'BANNED');</sql>
+        <sql>create type USER_STATUS as enum('ACTIVE', 'NOT_ACTIVE', 'DELETED', 'BANNED');</sql>
 
         <createTable tableName="base_user">
             <column name="id" type="UUID">
@@ -38,6 +38,9 @@
             <column name="password" type="TEXT">
                 <constraints nullable="false"/>
             </column>
+            <column name="created_date" type="timestamp with time zone" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
     </changeSet>
@@ -62,4 +65,243 @@
 
 
     </changeSet>
+
+    <changeSet id="added_salon_tables" author="Yehor Hnitii">
+
+        <sql>
+            set
+            timezone = 'UTC';
+        </sql>
+
+        <createTable tableName="salon">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="link_name" type="VARCHAR(32)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="avatar_id" type="UUID">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_date" type="timestamp with time zone" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="salon" baseColumnNames="avatar_id"
+                                 constraintName="fk_salon_avatar_id"
+                                 referencedTableName="file"
+                                 referencedColumnNames="id" onDelete="SET NULL"/>
+
+        <addColumn tableName="base_user">
+            <column name="avatar_id" type="UUID">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="base_user" baseColumnNames="avatar_id"
+                                 constraintName="fk_base_user_avatar_id"
+                                 referencedTableName="file"
+                                 referencedColumnNames="id" onDelete="SET NULL"/>
+
+        <createTable tableName="salon_master">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="master_id" type="UUID">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uq_salon_master_master_id_key"
+                             foreignKeyName="fk_salon_master_master_id"
+                             referencedTableName="base_user" referencedColumnNames="id"
+                             deleteCascade="true"/>
+            </column>
+            <column name="salon_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_salon_master_salon_id"
+                             referencedTableName="salon" referencedColumnNames="id"
+                             deleteCascade="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="salon_master_invite">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="token" type="text">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="salon_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_salon_master_invite_salon_id"
+                             referencedTableName="salon" referencedColumnNames="id"
+                             deleteCascade="true"/>
+            </column>
+            <column name="expiration_date" type="timestamp with time zone" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp with time zone" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- work schedule-->
+        <sql>CREATE TYPE DAY_OF_WEEK AS ENUM ('MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY','SUNDAY');</sql>
+
+        <createTable tableName="master_work_schedule">
+            <column name="id" type="UUID" valueComputed="UUID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="start_time" type="TIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_time" type="TIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="master_id" type="UUID">
+                <constraints nullable="false"
+                             foreignKeyName="fk_schedule_timeslot_master_id"
+                             referencedTableName="base_user" referencedColumnNames="id"
+                             deleteCascade="true"/>
+            </column>
+            <column name="day_of_week" type="DAY_OF_WEEK">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <sql>CREATE TYPE PROCEDURE_STATUS AS ENUM ('ACTIVE', 'DELETED');</sql>
+
+        <createTable tableName="procedure">
+            <column name="id" type="UUID" valueComputed="UUID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="PROCEDURE_STATUS">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="numeric(9,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="master_id" type="UUID">
+                <constraints nullable="false"
+                             foreignKeyName="fk_procedure_master_id"
+                             referencedTableName="base_user" referencedColumnNames="id"
+                             deleteCascade="true"/>
+            </column>
+            <column name="created_date" type="timestamp with time zone" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <sql>CREATE TYPE APPOINTMENT_STATUS AS ENUM ('ACTIVE', 'CANCELED');</sql>
+
+        <createTable tableName="appointment">
+            <column name="id" type="UUID" valueComputed="UUID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="start_date" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_date" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="numeric(9,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="APPOINTMENT_STATUS">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_id" type="UUID">
+                <constraints nullable="false"
+                             foreignKeyName="fk_appointment_client_id"
+                             referencedTableName="base_user" referencedColumnNames="id"
+                             deleteCascade="true"/>
+            </column>
+            <column name="procedure_id" type="UUID">
+                <constraints nullable="false"
+                             foreignKeyName="fk_appointment_procedure_id"
+                             referencedTableName="procedure" referencedColumnNames="id"
+                             deleteCascade="true"/>
+            </column>
+            <column name="notification_date" type="timestamp with time zone"/>
+            <column name="is_notified" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="canceled_date" type="timestamp with time zone"/>
+            <column name="canceled_reason" type="TEXT"/>
+            <column name="created_date" type="timestamp with time zone" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <sql>
+            alter table appointment
+                add constraint check_appointment_start_end_dates check (end_date > start_date);
+        </sql>
+
+        <sql>
+            create index if not exists idx_appointment_start_and_end_dates on appointment(start_date, end_date);
+        </sql>
+
+        <createTable tableName="user_code">
+            <column name="id" type="UUID" valueComputed="UUID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"
+                             foreignKeyName="fk_user_code_user_id"
+                             referencedTableName="base_user" referencedColumnNames="id"
+                             deleteCascade="true"/>
+            </column>
+            <column name="expiration_date" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp with time zone" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint tableName="user_code" columnNames="user_id,code"
+                             constraintName="uq_user_code_user_id_code_key"/>
+
+    </changeSet>
+
+    <changeSet id="added_description_column_to_salon_table" author="Yehor Hnitii">
+        <addColumn tableName="salon">
+            <column name="description" type="TEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="added_banner_id_column_to_salon_table" author="Yehor Hnitii">
+        <addColumn tableName="salon">
+            <column name="banner_id" type="UUID">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="salon" baseColumnNames="banner_id"
+                                 constraintName="fk_salon_banner_id"
+                                 referencedTableName="file"
+                                 referencedColumnNames="id" onDelete="SET NULL"/>
+
+    </changeSet>
+
+    <changeSet id="added_duration_column_to_procedure_table" author="Yehor Hnitii">
+        <addColumn tableName="procedure">
+            <column name="duration" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

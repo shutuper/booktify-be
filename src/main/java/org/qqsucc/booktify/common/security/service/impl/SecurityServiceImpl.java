@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -43,5 +44,17 @@ public class SecurityServiceImpl implements SecurityService {
 	@Override
 	public UUID getAuthUserId() {
 		return getAuthUserDetails().getId();
+	}
+
+	@Override
+	public Optional<UUID> getAuthUserIdOpt() {
+		Authentication authentication = SecurityContextHolder.getContext()
+				.getAuthentication();
+
+		if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+			return Optional.empty();
+		}
+
+		return Optional.of(((CustomUserDetails) authentication.getPrincipal()).getId());
 	}
 }

@@ -10,6 +10,7 @@ import org.qqsucc.booktify.common.security.service.impl.CustomUserDetailsService
 import org.qqsucc.booktify.user.repository.entity.enums.UserRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -46,6 +47,7 @@ public class SecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
 						.dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
+						.requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
 						.requestMatchers(PUBLIC_APIS).permitAll()
 						.requestMatchers(PRIVATE_APIS).hasAnyRole(
 								UserRole.ROLE_CLIENT.getRole(), UserRole.ROLE_MASTER.getRole(), UserRole.ROLE_ADMIN.getRole()

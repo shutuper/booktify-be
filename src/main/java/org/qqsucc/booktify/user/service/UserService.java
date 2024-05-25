@@ -1,8 +1,11 @@
 package org.qqsucc.booktify.user.service;
 
 import org.qqsucc.booktify.user.repository.entity.User;
+import org.qqsucc.booktify.user.repository.entity.enums.UserStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,8 +15,6 @@ public interface UserService {
 
 	User findByPhone(String phone);
 
-	List<User> findAll();
-
 	boolean existsByPhone(String phone);
 
 	boolean existsByEmail(String email);
@@ -21,4 +22,11 @@ public interface UserService {
 	User save(User user);
 
 	User findById(UUID userId);
+
+	Page<User> findAllMastersBySalonId(UUID salonId, Pageable pageable);
+
+	void deleteByStatusAndCreatedDateLessThan(UserStatus userStatus, Instant date);
+
+	User findBySalonIdAndMasterId(UUID salonId, UUID masterId);
+
 }

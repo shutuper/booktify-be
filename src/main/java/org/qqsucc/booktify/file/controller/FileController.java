@@ -19,14 +19,14 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 @Tag(name = "file")
 @RestController
-@RequestMapping("/api/v1/private/files")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = PRIVATE)
 public class FileController {
 
 	FileFacade fileFacade;
 
-	@GetMapping("/{fileId}")
+	@GetMapping("/public/files/{fileId}")
 	public ResponseEntity<StreamingResponseBody> download(@PathVariable UUID fileId,
 														  @RequestParam(defaultValue = "false") Boolean isAttachment) {
 		DownloadFileStreamDto downloadFileDto = fileFacade.download(fileId);
@@ -37,7 +37,7 @@ public class FileController {
 				.body(downloadFileDto.getStreamingResponseBody());
 	}
 
-	@PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
+	@PostMapping(value = "/private/files", consumes = MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<FileDto> upload(@RequestPart(value = "file", required = false) MultipartFile file) {
 		FileDto response = fileFacade.upload(file);
 		return ResponseEntity.ok(response);

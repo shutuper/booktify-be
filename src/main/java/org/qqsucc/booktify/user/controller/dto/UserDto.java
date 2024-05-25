@@ -42,6 +42,9 @@ public class UserDto {
 
 	String lastname;
 
+	@Schema(nullable = true)
+	UUID avatarId;
+
 	@JsonProperty(access = READ_ONLY)
 	@Schema(nullable = true)
 	@Email(message = "Invalid user email")

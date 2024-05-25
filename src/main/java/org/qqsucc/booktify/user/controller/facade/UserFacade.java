@@ -1,18 +1,9 @@
 package org.qqsucc.booktify.user.controller.facade;
 
-import org.qqsucc.booktify.user.controller.dto.*;
-
-import java.util.List;
+import org.qqsucc.booktify.user.controller.dto.AvatarUpdateDto;
 
 public interface UserFacade {
 
-	List<UserDto> findAll();
+	void updateAvatar(AvatarUpdateDto avatarDto);
 
-	AuthUserDto signUpMaster(SignUpDto signUpDto);
-
-	UserDto authMe();
-
-	AuthUserDto refreshToken(RefreshTokenDto refreshTokenDto);
-
-	AuthUserDto singIn(SignInDto signInDto);
 }

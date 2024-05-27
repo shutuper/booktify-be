@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.EnumSet;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,9 +52,10 @@ public class AppointmentFacadeImpl implements AppointmentFacade {
 	UserMapper userMapper;
 
 	@Override
-	public Page<AppointmentRespDto> getAppointments(Pageable pageable) {
+	public Page<AppointmentRespDto> getAppointments(Boolean showCanceled, Pageable pageable) {
 		CustomUserDetails authUser = SecurityUtils.getAuthUserDetails();
 		return appointmentService.findAllFilter(AppointmentFilter.builder()
+				.statuses(showCanceled ? EnumSet.allOf(AppointmentStatus.class) : EnumSet.of(AppointmentStatus.ACTIVE))
 				.masterId(UserRole.ROLE_MASTER.equals(authUser.getRole()) ? authUser.getId() : null)
 				.clientId(UserRole.ROLE_CLIENT.equals(authUser.getRole()) ? authUser.getId() : null)
 				.build(), pageable

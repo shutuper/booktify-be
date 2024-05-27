@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface AppointmentFacade {
 
-	Page<AppointmentRespDto> getAppointments(Pageable pageable);
+	Page<AppointmentRespDto> getAppointments(Boolean showCanceled, Pageable pageable);
 
 	AppointmentDto bookAppointment(AppointmentReqDto appointmentReqDto);
 

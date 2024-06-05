@@ -30,8 +30,8 @@ public class AppointmentController {
 	AppointmentFacade appointmentFacade;
 
 	@GetMapping("/private/appointments")
-	public ResponseEntity<Page<AppointmentRespDto>> getAppointments(@SortDefault(value = "startDate", direction = DESC)
-																	@RequestParam(defaultValue = "false") Boolean showCanceled,
+	public ResponseEntity<Page<AppointmentRespDto>> getAppointments(@RequestParam(defaultValue = "false") Boolean showCanceled,
+																	@SortDefault(value = "startDate", direction = DESC)
 																	@ParameterObject Pageable pageable) {
 		Page<AppointmentRespDto> response = appointmentFacade.getAppointments(showCanceled, pageable);
 		return ResponseEntity.ok(response);

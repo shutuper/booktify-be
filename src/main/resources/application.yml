@@ -10,7 +10,7 @@ spring:
       max-request-size: ${multipart.max-request-size}
   profiles.active: @activatedProperties@
   datasource:
-    url: jdbc:postgresql://${db.host}/${db.database}?stringtype=unspecified
+    url: jdbc:postgresql://${db.host}:5432/${db.database}?stringtype=unspecified
     username: ${db.username}
     password: ${db.password}
     driver-class-name: org.postgresql.Driver

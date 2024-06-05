@@ -1,34 +1,23 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: ${DATABASE-NAME-ENV}
-      POSTGRES_USER: ${DATABASE-USERNAME-ENV}
-      POSTGRES_PASSWORD: ${DATABASE-PASSWORD-ENV}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5434:5432"
-
   booktify-app:
+    container_name: booktify-app
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
     environment:
-      DATABASE-HOST-ENV: postgres:5432
+      DATABASE-HOST-ENV: postgres
       DATABASE-NAME-ENV: ${DATABASE-NAME-ENV}
       DATABASE-USERNAME-ENV: ${DATABASE-USERNAME-ENV}
       DATABASE-PASSWORD-ENV: ${DATABASE-PASSWORD-ENV}
       AWS_S3_ACCESS_KEY: ${AWS_S3_ACCESS_KEY}
       AWS_S3_SECRET_KEY: ${AWS_S3_SECRET_KEY}
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
-    depends_on:
-      - postgres
 
-volumes:
-  pgdata:
-
+networks:
+  default:
+    name: postgres-net
+    external: true

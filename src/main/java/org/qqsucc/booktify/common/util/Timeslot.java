@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Locale;
@@ -15,10 +15,10 @@ public interface Timeslot extends Comparable<Timeslot> {
 	DateTimeFormatter DATE_FORMATTER = DateTimeFormatter
 			.ofLocalizedDate(FormatStyle.MEDIUM)
 			.withLocale(Locale.ENGLISH)
-			.withZone(ZoneId.of("America/New_York"));
+			.withZone(ZoneOffset.UTC);
 	DateTimeFormatter TIME_FORMATTER = DateTimeFormatter
 			.ofPattern("h:mm a")
-			.withZone(ZoneId.of("America/New_York"));
+			.withZone(ZoneOffset.UTC);
 
 	Instant getStartDate();
 

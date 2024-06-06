@@ -50,7 +50,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
 						.requestMatchers(PUBLIC_APIS).permitAll()
 						.requestMatchers(PRIVATE_APIS).hasAnyRole(
-								UserRole.ROLE_CLIENT.getRole(), UserRole.ROLE_MASTER.getRole(), UserRole.ROLE_ADMIN.getRole()
+								UserRole.ROLE_CLIENT.getRole(), UserRole.ROLE_MASTER.getRole()
 						).anyRequest().anonymous()
 				)
 				.exceptionHandling(exception -> exception

@@ -17,6 +17,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -52,6 +53,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 	@Override
 	public Page<Appointment> findAllFilter(AppointmentFilter appointmentFilter, Pageable pageable) {
 		return appointmentRepository.findAll(getAppointmentSpec(appointmentFilter), pageable);
+	}
+
+	@Override
+	public List<Appointment> findAllForReminder() {
+		return appointmentRepository.findAllByStatusAndIsNotifiedAndNotificationDateBefore(AppointmentStatus.ACTIVE, false, Instant.now());
 	}
 
 	@NotNull

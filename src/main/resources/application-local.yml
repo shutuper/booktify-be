@@ -46,4 +46,16 @@ multipart:
 cors:
   origin: "*"
 
+twilio:
+  account-sid: ${TWILIO_ACCOUNT_SID}
+  auth-token: ${TWILIO_AUTH_TOKEN}
 
+sendgrid:
+  api-key: ${SENDGRID_API_KEY}
+
+notifications:
+  link: http://localhost:5173
+  email:
+    from: ${SENT_FROM_EMAIL}
+  sms:
+    from: ${SENT_FROM_PHONE}

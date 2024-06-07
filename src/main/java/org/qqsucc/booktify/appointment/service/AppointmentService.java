@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,4 +20,7 @@ public interface AppointmentService {
 	Set<TimeslotDto> findAllBookedTimeslots(UUID masterId, Instant startDate, Instant endDate);
 
 	Page<Appointment> findAllFilter(AppointmentFilter appointmentFilter, Pageable pageable);
+
+	List<Appointment> findAllForReminder();
+
 }

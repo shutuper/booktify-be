@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.qqsucc.booktify.common.exception.AlreadyExistException;
 import org.qqsucc.booktify.common.util.SecurityUtils;
+import org.qqsucc.booktify.notification.service.NotificationService;
 import org.qqsucc.booktify.salon.controller.dto.SalonDto;
 import org.qqsucc.booktify.salon.controller.dto.SalonMasterInviteDto;
 import org.qqsucc.booktify.salon.controller.facade.SalonFacade;
@@ -30,6 +31,7 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(makeFinal = true, level = PRIVATE)
 public class SalonFacadeImpl implements SalonFacade {
 
+	NotificationService notificationService;
 	SalonMasterService salonMasterService;
 	SalonService salonService;
 	SalonMapper salonMapper;
@@ -98,8 +100,7 @@ public class SalonFacadeImpl implements SalonFacade {
 						.build()
 		);
 
-		log.info("SENT_EMAIL: You have been invited to join {} salon, inviteToken={}", salon.getTitle(), token);
-		// todo add email sending to inviteDto.getEmail();
+		notificationService.sendMasterInvitation(inviteDto.getEmail(), token, salon.getTitle());
 	}
 
 	@Override

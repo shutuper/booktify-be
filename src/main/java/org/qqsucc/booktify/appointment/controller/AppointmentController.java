@@ -60,4 +60,11 @@ public class AppointmentController {
 		return ResponseEntity.ok(response);
 	}
 
+	@PutMapping("/private/appointments/{appointmentId}/reminders")
+	public ResponseEntity<AppointmentDto> remindAppointment(@PathVariable UUID appointmentId,
+															@RequestBody @Valid AppointmentRemindDto remindDto) {
+		AppointmentDto response = appointmentFacade.remindAppointment(appointmentId, remindDto);
+		return ResponseEntity.ok(response);
+	}
+
 }

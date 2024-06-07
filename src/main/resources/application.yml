@@ -29,3 +29,10 @@ springdoc:
     operationsSorter: method
     tagsSorter: alpha
     enabled: ${props.springdoc.enabled}
+
+templates:
+  paths:
+    email: templates/email
+    sms: templates/sms
+  email:
+    master_invitation: ${templates.paths.email}/master_invitation.vm

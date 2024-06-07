@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,4 +29,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID>,
 	@EntityGraph(attributePaths = {"client", "procedure.master.salonMaster.salon"})
 	Page<Appointment> findAll(@NotNull Specification<Appointment> spec, @NotNull Pageable pageable);
 
+	@EntityGraph(attributePaths = {"client", "procedure.master.salonMaster.salon"})
+	List<Appointment> findAllByStatusAndIsNotifiedAndNotificationDateBefore(AppointmentStatus active, boolean isNotified, Instant date);
 }

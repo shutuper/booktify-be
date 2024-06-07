@@ -26,6 +26,9 @@
         <apache.commons-collections4.version>4.4</apache.commons-collections4.version>
         <jwt.version>0.12.5</jwt.version>
         <jetbrains.annotations.version>24.1.0</jetbrains.annotations.version>
+        <sendgrid.version>4.10.2</sendgrid.version>
+        <twilio.sdk.version>10.2.1</twilio.sdk.version>
+        <velocity.version>1.7</velocity.version>
     </properties>
 
     <dependencyManagement>
@@ -80,6 +83,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -145,7 +152,24 @@
             <artifactId>annotations</artifactId>
             <version>${jetbrains.annotations.version}</version>
         </dependency>
-
+        <!-- For emails -->
+        <dependency>
+            <groupId>com.sendgrid</groupId>
+            <artifactId>sendgrid-java</artifactId>
+            <version>${sendgrid.version}</version>
+        </dependency>
+        <!-- For sms -->
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>${twilio.sdk.version}</version>
+        </dependency>
+        <!-- Velocity template engine for emails -->
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>${velocity.version}</version>
+        </dependency>
     </dependencies>
 
     <profiles>

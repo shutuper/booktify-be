@@ -9,10 +9,10 @@ import org.qqsucc.booktify.common.exception.BusinessException;
 import org.qqsucc.booktify.common.security.bean.TokenType;
 import org.qqsucc.booktify.common.security.service.JwtTokenService;
 import org.qqsucc.booktify.common.util.SecurityUtils;
+import org.qqsucc.booktify.notification.service.NotificationService;
 import org.qqsucc.booktify.salon.repository.entity.SalonMaster;
 import org.qqsucc.booktify.salon.repository.entity.SalonMasterInvite;
 import org.qqsucc.booktify.salon.service.SalonMasterService;
-import org.qqsucc.booktify.sms.service.SmsService;
 import org.qqsucc.booktify.user.controller.dto.ClientDto;
 import org.qqsucc.booktify.user.controller.dto.UserDto;
 import org.qqsucc.booktify.user.controller.dto.UserIdDto;
@@ -37,12 +37,12 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(makeFinal = true, level = PRIVATE)
 public class AuthFacadeImpl implements AuthFacade {
 
+	NotificationService notificationService;
 	SalonMasterService salonMasterService;
 	PasswordEncoder passwordEncoder;
 	JwtTokenService jwtTokenService;
 	UserCodeService userCodeService;
 	UserService userService;
-	SmsService smsService;
 
 	UserMapper userMapper;
 
@@ -80,7 +80,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		});
 
 		UserCode userCode = userCodeService.generateCode(client.getId());
-		smsService.sendSms(client.getPhone(), "Booktify otp code: " + userCode.getCode());
+		notificationService.sendSmsOtpCode(client.getPhone(), userCode.getCode());
 
 		return new UserIdDto(client.getId());
 	}
@@ -108,7 +108,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		if (sendOtpCode) {
 			UserCode userCode = userCodeService.generateCode(user.getId());
-			smsService.sendSms(user.getPhone(), "Booktify otp code: " + userCode.getCode());
+			notificationService.sendSmsOtpCode(user.getPhone(), userCode.getCode());
 
 		} else if (!passwordEncoder.matches(signInDto.getPassword(), user.getPassword())) {
 			throw new BusinessException("User with specified credentials not found");

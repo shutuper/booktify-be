@@ -1,5 +1,6 @@
 package org.qqsucc.booktify.appointment.controller.facade.impl;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.ObjectUtils;
@@ -16,6 +17,7 @@ import org.qqsucc.booktify.common.exception.AlreadyExistException;
 import org.qqsucc.booktify.common.exception.BusinessException;
 import org.qqsucc.booktify.common.security.bean.CustomUserDetails;
 import org.qqsucc.booktify.common.util.SecurityUtils;
+import org.qqsucc.booktify.notification.service.NotificationService;
 import org.qqsucc.booktify.procedure.repository.entity.Procedure;
 import org.qqsucc.booktify.procedure.service.ProcedureService;
 import org.qqsucc.booktify.procedure.service.TimeslotService;
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,6 +45,7 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(makeFinal = true, level = PRIVATE)
 public class AppointmentFacadeImpl implements AppointmentFacade {
 
+	NotificationService notificationService;
 	AppointmentService appointmentService;
 	ProcedureService procedureService;
 	TimeslotService timeslotService;
@@ -50,6 +54,8 @@ public class AppointmentFacadeImpl implements AppointmentFacade {
 
 	AppointmentMapper appointmentMapper;
 	UserMapper userMapper;
+
+	EntityManager entityManager;
 
 	@Override
 	public Page<AppointmentRespDto> getAppointments(Boolean showCanceled, Pageable pageable) {
@@ -76,11 +82,28 @@ public class AppointmentFacadeImpl implements AppointmentFacade {
 	}
 
 	@Override
+	public AppointmentDto remindAppointment(UUID appointmentId, AppointmentRemindDto remindDto) {
+		Appointment appointment = appointmentService.findById(appointmentId);
+
+		throwIfAppointmentCanNotBeChanged(SecurityUtils.getAuthUser(), appointment);
+
+		Instant notificationDate = appointment.getStartDate().minus(remindDto.getHoursBefore(), ChronoUnit.HOURS);
+
+		if (notificationDate.isBefore(Instant.now())) {
+			throw new BusinessException("Notification date can not be in the past");
+		}
+
+		appointment.setNotificationDate(notificationDate);
+
+		return appointmentMapper.toDto(appointment);
+	}
+
+	@Override
 	@Transactional
 	public AppointmentDto cancelAppointment(UUID appointmentId, AppointmentCancelDto cancelDto) {
 		Appointment appointment = appointmentService.findById(appointmentId);
 
-		throwIfAppointmentCanNotBeCanceled(SecurityUtils.getAuthUser(), appointment);
+		throwIfAppointmentCanNotBeChanged(SecurityUtils.getAuthUser(), appointment);
 
 		appointment.setStatus(AppointmentStatus.CANCELED);
 		appointment.setCanceledReason(cancelDto.getCancelReason());
@@ -114,7 +137,10 @@ public class AppointmentFacadeImpl implements AppointmentFacade {
 
 		Appointment savedAppointment = appointmentService.save(appointment);
 
-		// todo add sms/email notification
+		entityManager.flush();
+		entityManager.refresh(savedAppointment);
+
+		notificationService.sendAppointmentBooked(appointment);
 
 		return appointmentMapper.toDto(savedAppointment);
 	}
@@ -133,7 +159,7 @@ public class AppointmentFacadeImpl implements AppointmentFacade {
 		});
 	}
 
-	private static void throwIfAppointmentCanNotBeCanceled(User authUser, Appointment appointment) {
+	private static void throwIfAppointmentCanNotBeChanged(User authUser, Appointment appointment) {
 		boolean userIsNotAppointmentMaster = authUser.isMaster() && ObjectUtils.notEqual(
 				authUser.getId(), appointment.getProcedure().getMasterId()
 		);

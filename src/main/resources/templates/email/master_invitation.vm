@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: rgba(10, 9, 10, 0.87);
+            background-color: #f1f1f1;
+        }
+
+        .header {
+            background-color: #39393b;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .content {
+            margin: 20px;
+            padding: 20px;
+            font-size: 20px;
+            background-color: #ffffff;
+            border: 1px solid rgba(86, 38, 38, 0.12);
+            border-radius: 8px;
+        }
+
+        .footer {
+            background-color: #39393b;
+            padding: 20px;
+            font-size: 30px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .footer a:hover {
+            font-size: 35px;
+        }
+
+        a {
+            color: #aa4272;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Booktify 💅</h1>
+</div>
+<div class="content">
+    <p>Dear master,</p>
+    <p>You have been invited to join ${salon} on Booktify!</p>
+</div>
+<div class="footer">
+    <p><a href="${inviteUrl}" style="text-decoration: none; color: deeppink;">Join ${salon}</a>
+    </p>
+    <p>Thank you for choosing Booktify!</p>
+</div>
+</body>
+</html>

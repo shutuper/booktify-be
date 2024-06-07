@@ -15,4 +15,7 @@ public interface AppointmentFacade {
 	AppointmentDto cancelAppointment(UUID appointmentId, AppointmentCancelDto cancelDto);
 
 	AppointmentDto bookAppointmentByMaster(AppointmentMasterReqDto appointmentReqDto);
+
+	AppointmentDto remindAppointment(UUID appointmentId, AppointmentRemindDto remindDto);
+
 }
